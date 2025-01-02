@@ -1,2 +1,2 @@
-# DashSocketMod
+# WSStatusMod
 Replace with your mod's readme!

@@ -6,20 +6,20 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Celeste.Mod.DashSocketMod;
+namespace Celeste.Mod.WSStatusMod;
 
 public class WSClient {
     public static ClientWebSocket socket;
     public static async Task Open(){
         try
         {
-            Uri uri = new("ws://localhost:"+DashSocketModModule.Settings.ListenerPort);
+            Uri uri = new("ws://localhost:"+WSStatusModModule.Settings.ListenerPort);
             socket = new();
             await socket.ConnectAsync(uri, default);
         }
         catch (System.Exception e)
         {
-            Logger.Error("DashSocketMod","When opening: "+e.ToString());
+            Logger.Error("WSStatusMod","When opening: "+e.ToString());
             await Close();
         }
     }
@@ -36,7 +36,7 @@ public class WSClient {
         }
         catch (System.Exception e)
         {
-            Logger.Error("DashSocketMod","When sending: "+e.ToString());
+            Logger.Error("WSStatusMod","When sending: "+e.ToString());
             await Close();
         }
     }
@@ -49,7 +49,7 @@ public class WSClient {
         }
         catch (System.Exception e)
         {
-            Logger.Error("DashSocketMod","When closing: "+e.ToString());
+            Logger.Error("WSStatusMod","When closing: "+e.ToString());
             socket.Dispose();
             socket=null;
         }
