@@ -9,7 +9,7 @@ namespace Celeste.Mod.DashSocketMod;
 
 public class WSServer {
     public static ClientWebSocket socket;
-    public static async Task open(){
+    public static async Task Open(){
         try
         {
             Uri uri = new("ws://localhost:"+DashSocketModModule.Settings.ListenerPort);
@@ -19,15 +19,16 @@ public class WSServer {
         catch (System.Exception e)
         {
             Logger.Error("DashSocketMod","When opening: "+e.ToString());
+            socket=null;
         }
     }
-    public static async void send(string value){
+    public static async void Send(string value){
         try
         {
-            if(socket==null || (socket.State!=WebSocketState.Open && socket.State!=WebSocketState.Connecting)){
-                await open();
+            if(socket==null){
+                WSServer.Open();
             }
-            if(socket.State==WebSocketState.Open){
+            if(socket!=null && socket.State==WebSocketState.Open){
                 byte[] bytes = Encoding.UTF8.GetBytes(value);
                 await socket.SendAsync(bytes,WebSocketMessageType.Text,true,default);
             }
@@ -35,11 +36,10 @@ public class WSServer {
         catch (System.Exception e)
         {
             Logger.Error("DashSocketMod","When sending: "+e.ToString());
-            await socket.CloseAsync(WebSocketCloseStatus.EndpointUnavailable,"Closed",default);
-            socket=null;
+            Close();
         }
     }
-    public static void close(){
+    public static void Close(){
         try
         {
             socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client closed", default);
@@ -48,6 +48,7 @@ public class WSServer {
         catch (System.Exception e)
         {
             Logger.Error("DashSocketMod","When closing: "+e.ToString());
+            socket=null;
         }
     }
 }

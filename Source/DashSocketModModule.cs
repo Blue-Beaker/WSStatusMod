@@ -27,19 +27,19 @@ public class DashSocketModModule : EverestModule {
     }
 
     public override void Load() {
-        // TODO: apply any hooks that should always be active
+
         On.Celeste.Player.RefillDash += Player_RefillDash;
         On.Celeste.Player.DashBegin += Player_DashBegin;
-        On.Celeste.Player.UseRefill += Player_UseRefill;
-        WSServer.open();
+        On.Celeste.Player.DashUpdate += Player_DashUpdate;
+        WSServer.Open();
     }
 
     public override void Unload() {
-        // TODO: unapply any hooks applied in Load()
+        
         On.Celeste.Player.RefillDash -= Player_RefillDash;
         On.Celeste.Player.DashBegin -= Player_DashBegin;
-        On.Celeste.Player.UseRefill -= Player_UseRefill;
-        WSServer.close();
+        On.Celeste.Player.DashUpdate -= Player_DashUpdate;
+        WSServer.Close();
     }
 
     private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self) {
@@ -52,10 +52,10 @@ public class DashSocketModModule : EverestModule {
                 // We can call the original method at any point in the hook.
                 return orig(self);
             }
-    private static bool Player_UseRefill(On.Celeste.Player.orig_UseRefill orig, Player self, bool twoDashes) {
+    private static int Player_DashUpdate(On.Celeste.Player.orig_DashUpdate orig, Player self) {
                 UpdateDashes(self.Dashes);
                 // We can call the original method at any point in the hook.
-                return orig(self,twoDashes);
+                return orig(self);
             }
 
     static int last_dashes = 0;
@@ -65,7 +65,7 @@ public class DashSocketModModule : EverestModule {
         }
         last_dashes=dashes;
         Logger.Log(LogLevel.Debug,"Dashes: ", ""+dashes);
-        WSServer.send("dash="+dashes);
+        WSServer.Send("dash="+dashes);
     }
 
 }
