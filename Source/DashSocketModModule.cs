@@ -31,7 +31,7 @@ public class DashSocketModModule : EverestModule {
         On.Celeste.Player.RefillDash += Player_RefillDash;
         On.Celeste.Player.DashBegin += Player_DashBegin;
         On.Celeste.Player.DashUpdate += Player_DashUpdate;
-        WSServer.Open();
+        WSClient.Open();
     }
 
     public override void Unload() {
@@ -39,7 +39,7 @@ public class DashSocketModModule : EverestModule {
         On.Celeste.Player.RefillDash -= Player_RefillDash;
         On.Celeste.Player.DashBegin -= Player_DashBegin;
         On.Celeste.Player.DashUpdate -= Player_DashUpdate;
-        WSServer.Close();
+        WSClient.Close();
     }
 
     private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self) {
@@ -65,7 +65,7 @@ public class DashSocketModModule : EverestModule {
         }
         last_dashes=dashes;
         Logger.Log(LogLevel.Debug,"Dashes: ", ""+dashes);
-        WSServer.Send("dash="+dashes);
+        WSClient.Send("dash="+dashes);
     }
 
 }

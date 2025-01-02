@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Celeste.Mod.DashSocketMod;
 
-public class WSServer {
+public class WSClient {
     public static ClientWebSocket socket;
     public static async Task Open(){
         try
@@ -26,7 +26,7 @@ public class WSServer {
         try
         {
             if(socket==null){
-                WSServer.Open();
+                WSClient.Open();
             }
             if(socket!=null && socket.State==WebSocketState.Open){
                 byte[] bytes = Encoding.UTF8.GetBytes(value);
