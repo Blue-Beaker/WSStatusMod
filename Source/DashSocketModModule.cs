@@ -30,7 +30,7 @@ public class DashSocketModModule : EverestModule {
 
         On.Celeste.Player.RefillDash += Player_RefillDash;
         On.Celeste.Player.DashBegin += Player_DashBegin;
-        On.Celeste.Player.DashUpdate += Player_DashUpdate;
+        On.Celeste.Player.Update += Player_Update;
         WSClient.Open();
     }
 
@@ -38,7 +38,7 @@ public class DashSocketModModule : EverestModule {
         
         On.Celeste.Player.RefillDash -= Player_RefillDash;
         On.Celeste.Player.DashBegin -= Player_DashBegin;
-        On.Celeste.Player.DashUpdate -= Player_DashUpdate;
+        On.Celeste.Player.Update -= Player_Update;
         WSClient.Close();
     }
 
@@ -52,10 +52,10 @@ public class DashSocketModModule : EverestModule {
                 // We can call the original method at any point in the hook.
                 return orig(self);
             }
-    private static int Player_DashUpdate(On.Celeste.Player.orig_DashUpdate orig, Player self) {
+    private static void Player_Update(On.Celeste.Player.orig_Update orig, Player self) {
                 UpdateDashes(self.Dashes);
                 // We can call the original method at any point in the hook.
-                return orig(self);
+                orig(self);
             }
 
     static int last_dashes = 0;
