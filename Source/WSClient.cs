@@ -1,6 +1,7 @@
 
 using System;
 using System.IO;
+using System.Net.Http;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,14 +20,14 @@ public class WSClient {
         catch (System.Exception e)
         {
             Logger.Error("DashSocketMod","When opening: "+e.ToString());
-            socket=null;
+            await Close();
         }
     }
     public static async void Send(string value){
         try
         {
             if(socket==null){
-                WSClient.Open();
+                await WSClient.Open();
             }
             if(socket!=null && socket.State==WebSocketState.Open){
                 byte[] bytes = Encoding.UTF8.GetBytes(value);
@@ -36,18 +37,20 @@ public class WSClient {
         catch (System.Exception e)
         {
             Logger.Error("DashSocketMod","When sending: "+e.ToString());
-            Close();
+            await Close();
         }
     }
-    public static void Close(){
+    public static async Task Close(){
         try
         {
-            socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client closed", default);
+            await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client closed", default);
+            socket.Dispose();
             socket=null;
         }
         catch (System.Exception e)
         {
             Logger.Error("DashSocketMod","When closing: "+e.ToString());
+            socket.Dispose();
             socket=null;
         }
     }
