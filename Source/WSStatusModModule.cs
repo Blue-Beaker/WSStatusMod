@@ -31,7 +31,7 @@ public class WSStatusModModule : EverestModule {
         // On.Celeste.Player.RefillDash += Player_RefillDash;
         // On.Celeste.Player.DashBegin += Player_DashBegin;
         On.Celeste.Player.Update += Player_Update;
-        WSClient.Open();
+        _ = WSClient.Open();
     }
 
     public override void Unload() {
@@ -39,7 +39,7 @@ public class WSStatusModModule : EverestModule {
         // On.Celeste.Player.RefillDash -= Player_RefillDash;
         // On.Celeste.Player.DashBegin -= Player_DashBegin;
         On.Celeste.Player.Update -= Player_Update;
-        WSClient.Close();
+        _ = WSClient.Close();
     }
 
     // private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self) {
