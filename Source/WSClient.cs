@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Celeste.Mod.WSStatusMod;
 
 public class WSClient {
-    public static ClientWebSocket socket;
+    private static ClientWebSocket socket;
     public static async Task Open(){
         try
         {
