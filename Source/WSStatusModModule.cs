@@ -17,46 +17,49 @@ public class WSStatusModModule : EverestModule {
 
     public WSStatusModModule() {
         Instance = this;
-#if DEBUG
-        // debug builds use verbose logging
-        Logger.SetLogLevel(nameof(WSStatusModModule), LogLevel.Verbose);
-#else
-        // release builds use info logging to reduce spam in log files
-        Logger.SetLogLevel(nameof(WSStatusModModule), LogLevel.Info);
-#endif
+        #if DEBUG
+                // debug builds use verbose logging
+                Logger.SetLogLevel(nameof(WSStatusModModule), LogLevel.Verbose);
+        #else
+                // release builds use info logging to reduce spam in log files
+                Logger.SetLogLevel(nameof(WSStatusModModule), LogLevel.Info);
+        #endif
     }
 
     public override void Load() {
-
-        // On.Celeste.Player.RefillDash += Player_RefillDash;
-        // On.Celeste.Player.DashBegin += Player_DashBegin;
-        On.Celeste.Player.Update += Player_Update;
+        // On.Celeste.Player.Update += Player_Update;
+        Everest.Events.Player.OnAfterUpdate += Everest_Player_Update;
+        Everest.Events.Celeste.OnExiting += OnExiting;
+        Everest.Events.Level.OnExit += OnExitLevel;
         _ = WSClient.Open();
     }
 
     public override void Unload() {
-        
-        // On.Celeste.Player.RefillDash -= Player_RefillDash;
-        // On.Celeste.Player.DashBegin -= Player_DashBegin;
-        On.Celeste.Player.Update -= Player_Update;
+        // On.Celeste.Player.Update -= Player_Update;
+        Everest.Events.Player.OnAfterUpdate -= Everest_Player_Update;
+        Everest.Events.Celeste.OnExiting -= OnExiting;
+        Everest.Events.Level.OnExit -= OnExitLevel;
+        UpdateDashes(2);
         _ = WSClient.Close();
     }
 
-    // private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin orig, Player self) {
-    //             UpdateDashes(self.Dashes);
-    //             // We can call the original method at any point in the hook.
-    //             orig(self);
-    //         }
-    // private static bool Player_RefillDash(On.Celeste.Player.orig_RefillDash orig, Player self) {
-    //             UpdateDashes(self.Dashes);
-    //             // We can call the original method at any point in the hook.
-    //             return orig(self);
-    //         }
-    private static void Player_Update(On.Celeste.Player.orig_Update orig, Player self) {
-                UpdateDashes(self.Dashes);
-                // We can call the original method at any point in the hook.
-                orig(self);
-            }
+    private static void OnExitLevel(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
+        UpdateDashes(2);
+    }
+
+    private static void OnExiting() {
+        UpdateDashes(2);
+        _ = WSClient.Close();
+    }
+    
+    private static void Everest_Player_Update(Player player) {
+        UpdateDashes(player.Dashes);
+    }
+    // private static void Player_Update(On.Celeste.Player.orig_Update orig, Player self) {
+    //     UpdateDashes(self.Dashes);
+    //     // We can call the original method at any point in the hook.
+    //     orig(self);
+    // }
 
     static int last_dashes = 0;
     private static void UpdateDashes(int dashes){
